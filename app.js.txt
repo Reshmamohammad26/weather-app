@@ -1,0 +1,38 @@
+// app.js
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('location-form');
+    const locationInput = document.getElementById('location-input');
+    const weatherResult = document.getElementById('weather-result');
+    const cityName = document.getElementById('city-name');
+    const weatherDescription = document.getElementById('weather-description');
+    const temperature = document.getElementById('temperature');
+    const humidity = document.getElementById('humidity');
+    const windSpeed = document.getElementById('wind-speed');
+
+    const apiKey = 'YOUR_API_KEY'; // Replace with your OpenWeatherMap API key
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const location = locationInput.value;
+
+        fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.cod === 200) {
+                    cityName.textContent = data.name;
+                    weatherDescription.textContent = `Weather: ${data.weather[0].description}`;
+                    temperature.textContent = `Temperature: ${data.main.temp} °C`;
+                    humidity.textContent = `Humidity: ${data.main.humidity}%`;
+                    windSpeed.textContent = `Wind Speed: ${data.wind.speed} m/s`;
+                    weatherResult.style.display = 'block';
+                } else {
+                    alert('City not found!');
+                    weatherResult.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                alert('Error fetching weather data!');
+                console.error(error);
+            });
+    });
+});
